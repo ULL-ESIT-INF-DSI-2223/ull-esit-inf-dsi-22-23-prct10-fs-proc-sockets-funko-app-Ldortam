@@ -1,0 +1,7 @@
+{
+    "entryPoints": [
+        "./src/ejercicio1/Funko.ts"
+    ],
+    "out": "./docs",
+    
+}
