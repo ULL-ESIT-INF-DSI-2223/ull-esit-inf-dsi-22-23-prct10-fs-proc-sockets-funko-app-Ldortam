@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "mocha",
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls && rm -rf .nyc_output",
-    "start": "tsc-watch --onSuccess \"node dist/index.js\"",
+    "server": "tsc-watch --onSuccess \"node dist/mod/servidor.js\"",
+    "client": "tsc-watch --onSuccess \"node dist/mod/cliente.js\"",
     "doc": "typedoc; touch .docs/.nojekyll"
   },
   "keywords": [],
@@ -14,12 +16,14 @@
   "devDependencies": {
     "@types/chai": "^4.3.4",
     "@types/mocha": "^10.0.1",
+    "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
     "chai": "^4.3.7",
     "coveralls": "^3.1.1",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
+    "events": "^3.3.0",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "prettier": "^2.8.7",
