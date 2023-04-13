@@ -1,6 +1,12 @@
 import {EventEmitter} from 'events';
-
+/**
+ * Clase MEssageEventEmmiter del Cliente
+ */
 export class MessageEventEmitterClient extends EventEmitter {
+    /**
+     * Constructor de la clase
+     * @param connection Elemento de la clase EventEmiter
+     */
   constructor(connection: EventEmitter) {
     super();
 

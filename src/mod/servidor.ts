@@ -1,11 +1,18 @@
 import net from 'net';
 import {watchFile} from 'fs';
 
-
+/**
+ * Nombre del fichero a usar
+ */
   const fileName = 'mensaje.json'
+  /**
+   * Servidor conectado con el servidor
+   */
   net.createServer((connection) => {
     console.log('A client has connected.');
-
+/**
+ * Manda mensaje del fichero
+ */
     connection.write(JSON.stringify({'type': 'read', 'file': fileName}) +
       '\n');
 
