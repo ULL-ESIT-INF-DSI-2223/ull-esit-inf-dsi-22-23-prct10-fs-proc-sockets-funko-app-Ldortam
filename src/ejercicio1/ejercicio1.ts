@@ -1,5 +1,8 @@
 import {access, constants, watch} from 'fs';
 
+/**
+ * Ejercio 1
+ */
 if (process.argv.length !== 3) {
   console.log('Please, specify a file');
 } else {
