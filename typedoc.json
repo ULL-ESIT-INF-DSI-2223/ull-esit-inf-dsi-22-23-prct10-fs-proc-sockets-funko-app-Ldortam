@@ -1,6 +1,8 @@
 {
     "entryPoints": [
         "./src/ejercicio1/ejercicio1.ts",
+        "./src/ejercicio2/pipe/ejercicio2.ts",
+        "./src/ejercicio2/no_pipe/ejercicio2.ts",
         "./src/mod/servidor.ts",
         "./src/mod/cliente.ts",
         "./src/mod/eventEmitterClient.ts"

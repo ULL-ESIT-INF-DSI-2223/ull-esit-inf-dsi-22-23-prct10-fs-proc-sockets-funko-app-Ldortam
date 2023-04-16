@@ -222,9 +222,127 @@ commands();
 ```
 
 ## Modificación
+Este ejercicio, explicado de la manera más sencilla, consistía en crear una conexion entre un servidor y un cliente haciendo uso de sockets. Por tanto, se creó un .ts para el sservidor, otro para el cliente y otro llamado eventEmitterClient, además del .json que era como se transmitían los mensajes.
+
+No llegué a terminar este código.
+
+### SERVIDOR
+```typescript
+import net from 'net';
+import {watchFile} from 'fs';
+
+/**
+ * Nombre del fichero a usar
+ */
+  const fileName = 'mensaje.json'
+  /**
+   * Servidor conectado con el servidor
+   */
+  net.createServer((connection) => {
+    console.log('A client has connected.');
+/**
+ * Manda mensaje del fichero
+ */
+    connection.write(JSON.stringify({'type': 'read', 'file': fileName}) +
+      '\n');
+
+    watchFile(fileName, (curr, prev) => {
+      connection.write(JSON.stringify({
+        'type': 'change', 'prevSize': prev.size, 'currSize': curr.size}) +
+         '\n');
+    });
+
+    connection.on('close', () => {
+      console.log('A client has disconnected.');
+    });
+  }).listen(60300, () => {
+    console.log('Waiting for clients to connect.');
+  });
+
+```
+
+### CLIENTE
+```typescript
+import {connect} from 'net';
+import {MessageEventEmitterClient} from './eventEmitterClient.js';
+/**
+ * Constante cliente que utiliza la clase MessageEventEmitterClient
+ * para conectarse
+ */
+const client = new MessageEventEmitterClient(connect({port: 60300}));
+/**
+ * Recibe mensaje del servidor
+ */
+client.on('message', (message) => {
+  if (message.type === 'watch') {
+    console.log(`Connection established: watching file ${message.file}`);
+  } else if (message.type === 'change') {
+    console.log('File has been modified.');
+    console.log(`Previous size: ${message.prevSize}`);
+    console.log(`Current size: ${message.currSize}`);
+  } else {
+    console.log(`Message type ${message.type} is not valid`);
+  }
+});
+```
+
+### EVENTEMITTERCLIENT SOURCE
+```typescript
+import {EventEmitter} from 'events';
+/**
+ * Clase MEssageEventEmmiter del Cliente
+ */
+export class MessageEventEmitterClient extends EventEmitter {
+    /**
+     * Constructor de la clase
+     * @param connection Elemento de la clase EventEmiter
+     */
+  constructor(connection: EventEmitter) {
+    super();
+
+    let wholeData = '';
+    connection.on('data', (dataChunk) => {
+      wholeData += dataChunk;
+
+      let messageLimit = wholeData.indexOf('\n');
+      while (messageLimit !== -1) {
+        const message = wholeData.substring(0, messageLimit);
+        wholeData = wholeData.substring(messageLimit + 1);
+        this.emit('message', JSON.parse(message));
+        messageLimit = wholeData.indexOf('\n');
+      }
+    });
+  }
+}
+```
+
+### EVENTEMITTERCLIENT TEST
+```typescript
+import 'mocha';
+import {expect} from 'chai';
+import {EventEmitter} from 'events';
+import {MessageEventEmitterClient} from '../../src/mod/eventEmitterClient';
+
+describe('MessageEventEmitterClient', () => {
+  it('Should emit a message event once it gets a complete message', (done) => {
+    const socket = new EventEmitter();
+    const client = new MessageEventEmitterClient(socket);
+
+    client.on('message', (message) => {
+      expect(message).to.be.eql({'type': 'change', 'prev': 13, 'curr': 26});
+      done();
+    });
+
+    socket.emit('data', '{"type": "change", "prev": 13');
+    socket.emit('data', ', "curr": 26}');
+    socket.emit('data', '\n');
+  });
+});
+```
 
 ## Conclusiones
 <!-- propuestas de mejoras, con que me quedé al final -->
+En conclusión esta práctica nos ha hecho trabajar de manera más directa con muchas de las funcionalidades de Node y viendo que la mayoría de estos conceptos son fundamentales para la programación de hoy en día es importante que se vean y práctiquen. 
 
 ## Referencias
 
